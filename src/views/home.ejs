@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./home.css">
+    <title><%= title %></title>
+</head>
+<body>
+    <nav>
+        <h1>Habit Tracker App</h1>
+    </nav>
+
+    <div id="input">
+        <form action="/add" method="POST" class="input-form">
+
+            <input type="text" name="habit" placeholder="Habit..." required>
+
+            <button type="submit" id="form-btn">Add Habit</button>
+        </form>
+    </div>
+
+
+    <div id="functions">
+        <div class="wrapper">
+                <div id="done"></div>
+                <div class="type">DONE</div>
+         </div>
+         <div class="wrapper">
+                <div id="not-done"></div>
+                <div class="type">NOT DONE</div>
+         </div>
+         <div class="wrapper">
+                <div id="unmarked"></div>
+                <div class="type">PENDING</div>
+        </div>
+    </div>
+
+
+    <div class="habit-inclusive">
+
+        <ul class="list">
+
+            <li class="week-inclusive">
+                <% for(let habit of habits){%>
+
+                    <div class="daily-habit">
+
+                        <% const fullDate = new Date();
+                        
+                        let date = fullDate.getDate();
+
+                        let month = fullDate.getMonth() + 1;
+
+                        const year = fullDate.getFullYear();
+
+                        if(date < 10)
+                            date = '0' + date;
+
+                        if(month < 10)
+                            month = '0' + month;
+
+                        const todaysDate = date + "/" + month + "/" + year;
+
+                        let found = false, status = null;
+                        
+                        habit.dates.find((eachDate) => {
+                            
+                            if(eachDate.date === todaysDate){
+                                
+                                found = true;
+                                status = eachDate.complete;
+
+                            }
+                        })
+                        
+                        %>
+                         <!--Habit status for today-->
+                        <a href="/changehabitstatus/?id=<%= habit._id%>&date=<%=todaysDate%>" class="status">
+                        
+                        <% if(found && status === 'yes'){%>
+
+                            <div class="yes">DONE</div>
+                        
+                       <% }else if(found && status === 'no'){%>
+
+                            <div class="no">NOT DONE</div>
+
+                       <%}else if(found && status === 'none'){%>
+
+                            <div class="none">UNMARKED</div>
+
+                       <%}%>
+                             
+                        </a>
+                        <!--HABIT  TITLE-->
+                        <div class="content">Today's update for <%=habit.content%></div>
+
+                        <!--Delete Button-->
+                        <a href="/delete/?id=<%=habit._id%>" class="delete">
+                                <div class="delete-btn">Delete Habit</div>
+                        </a>
+
+                    </div>
+                   
+                    <div class="weekly-habit">
+                        <% for(let date of week){%>
+
+                            <div class="date">
+
+                                <p>
+                                    <%= date%>
+                                </p>
+
+                                <% 
+                                
+                                let isFound =  true, isStatus = "none";
+
+                                habit.dates.forEach((eachDate)=> {
+                                    
+                                if(eachDate.date === date){
+                                    isFound = true;
+                                    isStatus = eachDate.complete
+                                }})
+                                %>
+
+                                <!--Habit status for each day of week-->
+                                <a href="/changehabitstatus/?id=<%=habit._id%>&date=<%=date%>"class="status">
+                                
+                                    <% if(isFound && isStatus === 'yes'){%>
+
+                                        <div class="yes">DONE</div>
+
+                                        <% }else if(isFound && isStatus === 'no'){%>
+
+                                            <div class="no">NOT DONE</div>
+                
+                                       <%}else if(isFound && isStatus === 'none'){%>
+                
+                                            <div class="none">UNMARKED</div>
+                
+                                       <%}%>
+                                             
+                                
+                                </a>
+                            </div>
+
+                       <% }%>
+                    </div>
+
+                    <%}%>
+            </li>
+
+        </ul>
+
+    </div>
+
+</body>
+</html>
