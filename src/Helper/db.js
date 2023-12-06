@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv"
 
-const db = mongoose.connect("mongodb+srv://mayanknir:Mayank06!@cluster0.7wps3gf.mongodb.net/?retryWrites=true&w=majority");
+dotenv.config()
+const db = mongoose.connect(process.env.URI);
 
 console.log("mongodb connected");
 
